@@ -1,2 +1,2 @@
 # MongoDB.Immutable
-MongoDB-Serializer for System.Collections.Immutable
+Serializer for System.Collections.Immutable
