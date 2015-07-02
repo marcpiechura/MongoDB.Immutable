@@ -13,5 +13,5 @@ Every Immutable class has it's own seriliazer
 - ImmutableList -> ImmutableListSerializer
 - ImmutableQueue -> ImmutableQueueSerializer
 - ImmutableSortedDictionary -> ImmutableSortedDictionarySerializer
-- ImmutableSortedSet -> ImmutableSortedSetSerializer,
+- ImmutableSortedSet -> ImmutableSortedSetSerializer
 - ImmutableStack -> ImmutableStackSerializer
