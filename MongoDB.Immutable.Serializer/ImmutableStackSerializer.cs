@@ -6,15 +6,15 @@ using MongoDB.Bson.Serialization.Serializers;
 
 namespace MongoDB.Immutable.Serializer
 {
-    public class ImmutableStackSerializer<TValue> : EnumerableSerializerBase<ImmutableStack<TValue>>
+    public class ImmutableStackSerializer<TValue> : EnumerableSerializerBase<ImmutableStack<TValue>, TValue>
     {
-        protected override void AddItem(object accumulator, object item)
-            => ((Stack<TValue>) accumulator).Push((TValue) item);
+        protected override void AddItem(object accumulator, TValue item)
+            => ((Stack<TValue>) accumulator).Push(item);
 
         protected override object CreateAccumulator() => new Stack<TValue>();
 
-        protected override IEnumerable EnumerateItemsInSerializationOrder(ImmutableStack<TValue> value)
-            => value.Cast<object>().Reverse();
+        protected override IEnumerable<TValue> EnumerateItemsInSerializationOrder(ImmutableStack<TValue> value)
+            => value.Reverse();
 
         protected override ImmutableStack<TValue> FinalizeResult(object accumulator)
             =>
