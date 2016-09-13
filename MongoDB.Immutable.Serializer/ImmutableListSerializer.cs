@@ -4,7 +4,7 @@ using MongoDB.Bson.Serialization.Serializers;
 
 namespace MongoDB.Immutable.Serializer
 {
-    public class ImmutableListSerializer<TValue> : EnumerableInterfaceImplementerSerializerBase<ImmutableList<TValue>>
+    public class ImmutableListSerializer<TValue> : EnumerableInterfaceImplementerSerializerBase<ImmutableList<TValue>, TValue>
     {
         protected override object CreateAccumulator() => new List<TValue>();
 
