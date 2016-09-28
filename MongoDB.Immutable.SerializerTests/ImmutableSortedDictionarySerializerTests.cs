@@ -1,12 +1,4 @@
 ﻿using System.Collections.Immutable;
-using FluentAssertions;
-using Machine.Specifications;
-using MongoDB.Bson.Serialization;
-using MongoDB.Driver;
-using MongoDB.Immutable.Serializer;
-
-// ReSharper disable UnusedMember.Local
-// ReSharper disable InconsistentNaming
 
 namespace MongoDB.Immutable.SerializerTests
 {
@@ -18,18 +10,11 @@ namespace MongoDB.Immutable.SerializerTests
             .Add("2", 2)
             .Add("1", 1);
 
-        private static ImmutableSortedDictionary<string, object> ActualDictionary;
-
-        private Establish context = () =>
+        protected override TestDocument<ImmutableSortedDictionary<string, object>> CreateDocument()
         {
-            BsonSerializer.RegisterGenericSerializerDefinition(typeof(ImmutableSortedDictionary<,>), typeof(ImmutableSortedDictionarySerializer<,>));
+            return new TestDocument<ImmutableSortedDictionary<string, object>>(ExpectedDictionary);
+        }
 
-            Collection.InsertOneAsync(new TestDocument<ImmutableSortedDictionary<string, object>>(ExpectedDictionary)).Wait();
-        };
-
-        private Because of = () => ActualDictionary = Collection.Find(_ => true).FirstAsync().Result.Value;
-
-        private It should_return_the_saved_sorted_dictionary =
-            () => ActualDictionary.ShouldAllBeEquivalentTo(ExpectedDictionary);
+        protected override ImmutableSortedDictionary<string, object> ExpectedResult() => ExpectedDictionary;
     }
 }

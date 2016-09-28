@@ -1,15 +1,8 @@
 ﻿using System.Collections.Immutable;
-using FluentAssertions;
-using Machine.Specifications;
-using MongoDB.Bson.Serialization;
-using MongoDB.Driver;
-using MongoDB.Immutable.Serializer;
-
-// ReSharper disable UnusedMember.Local
-// ReSharper disable InconsistentNaming
 
 namespace MongoDB.Immutable.SerializerTests
 {
+    // ReSharper disable InconsistentNaming
     internal class IImmutableListSerializerTests : MongoIntegrationTest<IImmutableList<string>>
     {
         private static readonly IImmutableList<string> ExpectedList = ImmutableList<string>
@@ -17,19 +10,12 @@ namespace MongoDB.Immutable.SerializerTests
             .Add("1")
             .Add("2");
 
-        private static IImmutableList<string> ActualList;
-
-        private Establish context = () =>
+        protected override TestDocument<IImmutableList<string>> CreateDocument()
         {
-            BsonSerializer.RegisterGenericSerializerDefinition(typeof(IImmutableList<>), typeof(ImmutableListSerializer<>));
+            return new TestDocument<IImmutableList<string>>(ExpectedList);
+        }
 
-            Collection.InsertOneAsync(new TestDocument<IImmutableList<string>>(ExpectedList)).Wait();
-        };
-
-        private Because of = () => ActualList = Collection.Find(_ => true).FirstAsync().Result.Value;
-
-        private It should_return_the_saved_list =
-            () => ActualList.ShouldAllBeEquivalentTo(ExpectedList);
+        protected override IImmutableList<string> ExpectedResult() => ExpectedList;
     }
 
     internal class ImmutableListSerializerTests : MongoIntegrationTest<ImmutableList<string>>
@@ -39,18 +25,11 @@ namespace MongoDB.Immutable.SerializerTests
             .Add("1")
             .Add("2");
 
-        private static ImmutableList<string> ActualList;
-
-        private Establish context = () =>
+        protected override TestDocument<ImmutableList<string>> CreateDocument()
         {
-            BsonSerializer.RegisterGenericSerializerDefinition(typeof(ImmutableList<>), typeof(ImmutableListSerializer<>));
+            return new TestDocument<ImmutableList<string>>(ExpectedList);
+        }
 
-            Collection.InsertOneAsync(new TestDocument<ImmutableList<string>>(ExpectedList)).Wait();
-        };
-
-        private Because of = () => ActualList = Collection.Find(_ => true).FirstAsync().Result.Value;
-
-        private It should_return_the_saved_list =
-            () => ActualList.ShouldAllBeEquivalentTo(ExpectedList);
+        protected override ImmutableList<string> ExpectedResult() => ExpectedList;
     }
 }

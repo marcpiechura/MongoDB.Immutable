@@ -1,31 +1,40 @@
-﻿using System;
-using Machine.Specifications;
+﻿using System.Collections;
+using FluentAssertions;
 using Mongo2Go;
 using MongoDB.Driver;
-// ReSharper disable UnusedMember.Local
-// ReSharper disable InconsistentNaming
-// ReSharper disable StaticMemberInGenericType
+using NUnit.Framework;
 
 namespace MongoDB.Immutable.SerializerTests
 {
-    class MongoIntegrationTest<TValue>
+    abstract class MongoIntegrationTest<TValue> where TValue : IEnumerable
     {
-        internal static MongoDbRunner _runner;
-        internal static IMongoCollection<TestDocument<TValue>> Collection;
+        private MongoDbRunner _runner;
+        private IMongoCollection<TestDocument<TValue>> _collection;
 
-        private Establish context = () =>
+        [OneTimeSetUp]
+        public void Setup()
         {
             _runner = MongoDbRunner.Start();
 
-            Collection =
+            _collection =
                 new MongoClient(_runner.ConnectionString)
                     .GetDatabase("MongoDB-Immutable-Serializer")
                     .GetCollection<TestDocument<TValue>>("Test");
-        };
+        }
 
-        private Cleanup stuff = () =>
+        protected abstract TestDocument<TValue> CreateDocument();
+
+        protected abstract TValue ExpectedResult();
+
+        [Test]
+        public void Serializer_should_be_able_to_serialize()
         {
-            _runner.Dispose();
-        };
+            _collection.InsertOne(CreateDocument());
+
+            _collection.Find(_ => true).First().Value.ShouldBeEquivalentTo(ExpectedResult());
+        }
+
+        [OneTimeTearDown]
+        public void Cleanup() => _runner.Dispose();
     }
 }

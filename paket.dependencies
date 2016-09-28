@@ -1,8 +1,0 @@
-redirects: on
-source https://nuget.org/api/v2
-
-nuget FluentAssertions
-nuget Machine.Specifications
-nuget Mongo2Go
-nuget MongoDB.Driver
-nuget System.Collections.Immutable

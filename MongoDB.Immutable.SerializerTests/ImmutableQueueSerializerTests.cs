@@ -1,14 +1,7 @@
 ﻿using System.Collections.Immutable;
-using FluentAssertions;
-using Machine.Specifications;
-using MongoDB.Bson.Serialization;
-using MongoDB.Driver;
-using MongoDB.Immutable.Serializer;
-// ReSharper disable UnusedMember.Local
-// ReSharper disable InconsistentNaming
-
 namespace MongoDB.Immutable.SerializerTests
 {
+    // ReSharper disable InconsistentNaming
     class IImmutableQueueSerializerTests : MongoIntegrationTest<IImmutableQueue<int>>
     {
         private static readonly IImmutableQueue<int> ExpectedQueue =
@@ -17,18 +10,12 @@ namespace MongoDB.Immutable.SerializerTests
                 .Enqueue(2)
                 .Enqueue(3);
 
-        private static IImmutableQueue<int> ActualQueue;
-
-        private Establish context = () =>
+        protected override TestDocument<IImmutableQueue<int>> CreateDocument()
         {
-            BsonSerializer.RegisterGenericSerializerDefinition(typeof(IImmutableQueue<>),
-                typeof(ImmutableQueueSerializer<>));
-            Collection.InsertOneAsync(new TestDocument<IImmutableQueue<int>>(ExpectedQueue)).Wait();
-        };
+            return new TestDocument<IImmutableQueue<int>>(ExpectedQueue);
+        }
 
-        private Because of = () => ActualQueue = Collection.Find(_ => true).FirstAsync().Result.Value;
-
-        private It should_return_the_saved_queue = () => ActualQueue.ShouldBeEquivalentTo(ExpectedQueue);
+        protected override IImmutableQueue<int> ExpectedResult() => ExpectedQueue;
     }
 
     class ImmutableQueueSerializerTests : MongoIntegrationTest<ImmutableQueue<int>>
@@ -39,17 +26,11 @@ namespace MongoDB.Immutable.SerializerTests
                 .Enqueue(2)
                 .Enqueue(3);
 
-        private static ImmutableQueue<int> ActualQueue;
-
-        private Establish context = () =>
+        protected override TestDocument<ImmutableQueue<int>> CreateDocument()
         {
-            BsonSerializer.RegisterGenericSerializerDefinition(typeof(ImmutableQueue<>),
-                typeof(ImmutableQueueSerializer<>));
-            Collection.InsertOneAsync(new TestDocument<ImmutableQueue<int>>(ExpectedQueue)).Wait();
-        };
+            return new TestDocument<ImmutableQueue<int>>(ExpectedQueue);
+        }
 
-        private Because of = () => ActualQueue = Collection.Find(_ => true).FirstAsync().Result.Value;
-
-        private It should_return_the_saved_queue = () => ActualQueue.ShouldBeEquivalentTo(ExpectedQueue);
+        protected override ImmutableQueue<int> ExpectedResult() => ExpectedQueue;
     }
 }
